@@ -94,7 +94,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TaskResponse> getTasks(TaskStatus status, UUID categoryId, String sortBy) {
+    public List<TaskResponse> getTasks(TaskStatus status, UUID categoryId, String sortBy, String query) {
         List<Task> tasks;
 
         if (status != null && categoryId != null) {
@@ -107,6 +107,16 @@ public class TaskServiceImpl implements TaskService {
             tasks = taskRepository.findAll();
         }
 
+        // 🔎 Фильтрация по части названия (без учёта регистра)
+        if (query != null && !query.isBlank()) {
+            String normalized = query.toLowerCase();
+            tasks = tasks.stream()
+                    .filter(t -> t.getTitle() != null &&
+                            t.getTitle().toLowerCase().contains(normalized))
+                    .toList();
+        }
+
+        // Сортировка по createdAt, как было раньше
         if (sortBy != null && sortBy.equals("createdAt")) {
             tasks = tasks.stream()
                     .sorted(Comparator.comparing(Task::getCreatedAt))
@@ -117,6 +127,7 @@ public class TaskServiceImpl implements TaskService {
                 .map(taskMapper::toDto)
                 .toList();
     }
+
 
     @Override
     public TaskResponse updateStatus(UUID id, TaskStatus status) {

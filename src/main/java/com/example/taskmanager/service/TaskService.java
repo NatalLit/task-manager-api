@@ -19,7 +19,8 @@ public interface TaskService {
 
     TaskResponse getTask(UUID id);
 
-    List<TaskResponse> getTasks(TaskStatus status, UUID categoryId, String sortBy);
+    List<TaskResponse> getTasks(TaskStatus status, UUID categoryId, String sortBy, String query);
+
 
     TaskResponse updateStatus(UUID id, TaskStatus status);
 

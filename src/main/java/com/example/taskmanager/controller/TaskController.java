@@ -32,9 +32,10 @@ public class TaskController {
     public List<TaskResponse> getAll(
             @RequestParam(required = false) TaskStatus status,
             @RequestParam(required = false) UUID categoryId,
-            @RequestParam(defaultValue = "createdAt") String sortBy
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false) String query
     ) {
-        return taskService.getTasks(status, categoryId, sortBy);
+        return taskService.getTasks(status, categoryId, sortBy, query);
     }
 
     @GetMapping("/{id}")
